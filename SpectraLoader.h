@@ -24,7 +24,7 @@ public:
 		string tmp;
 		double a, b, c, d;
 
-		inf >> tmp >> tmp >> tmp >> tmp;
+		getline( inf, tmp );
 
 		while( inf >> a >> b >> c >> d ){
 
@@ -56,8 +56,7 @@ public:
 		}
 
 
-		
-
+		inf.close();
 	}
 
 	void trim( int N = 1 ){
