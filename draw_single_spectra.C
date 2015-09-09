@@ -20,55 +20,24 @@ string file_name( string energy, string plc, string iCen ){
 
 }
 
-int nPtBins = 26;
-double ptBins[] = { 
-0.0,
-0.5,
-0.6, 
-0.7, 
-0.8, 
-0.9, 
-1.0, 
-1.1, 
-1.2, 
-1.3, 
-1.4, 
-1.5, 
-1.6, 
-1.7, 
-1.8, 
-1.9, 
-2.0	, 
-2.2	, 
-2.4	, 
-2.6	, 
-2.8	,
-3.0 , 
-3.5, 
-4.5, 
-5.0, 
-6.0, 
-6.8 };
+string plc_label( string plc ){
+	if ("la" == plc )
+		return "#Lambda";
+	if ("ala" == plc )
+		return "#bar{#Lambda}";
 
-TH1 * normalize_binning( TH1 * in ){
-	INFO( "Normalizing the bins for " << in->GetName() );
-	string name = in->GetName();
-	name += + "_normed";
-	TH1 * out = new TH1D( name.c_str(), "", nPtBins, ptBins );
+	if ("xi" == plc )
+		return "#Xi^{-}";
+	if ("axi" == plc )
+		return "#bar{#Xi}^{+}";
 
+	if ( "ks" == plc )
+		return "K^{0}_{S}";
 
-	DEBUG( "Input has " << in->GetNbinsX() << " bins" );
-	for ( int i = 1; i <= in->GetNbinsX(); i++ ){
-		out->SetBinContent( i + 1, in->GetBinContent( i ) );
-		out->SetBinError( i + 1, in->GetBinError( i ) );
-	}
-
-	DEBUG( "returing normalized hitograms " << name  );
-	return out;
+	return "";
 }
 
-
-TH1* draw_single_spectra( 	string energy, string plc, string iCen,
+TGraphErrors* draw_single_spectra( 	string energy, string plc, string iCen,
 							int color = kRed, string draw_opt = "", double scaler = 1.0 ){
 
 	Logger::setGlobalLogLevel( Logger::llAll );
@@ -77,20 +46,23 @@ TH1* draw_single_spectra( 	string energy, string plc, string iCen,
 
 	string fn = file_name( energy, plc, iCen );
 	if ( !file_exists( fn ) )
-		return new TH1D( "err", "", nPtBins, ptBins );
+		return new TGraphErrors();
+
+
 
 	INFO( "Loading " << fn )
 	SpectraLoader sl( fn );
 
-	TH1* stat = sl.statHisto( fn + "_stat" );
+	sl = sl * scaler;
 
+	TGraphErrors* stat = sl.statGraph( );
 
-	stat->Scale( scaler );
+	//stat->Scale( scaler );
 
-	if ( "la" == plc || "ala" == plc){
-		stat->SetBinContent( 1, 0 );
-		stat->SetBinError( 1, 0 );
-	}
+	// if ( "la" == plc || "ala" == plc){
+	// 	stat->SetBinContent( 1, 0 );
+	// 	stat->SetBinError( 1, 0 );
+	// }
 
 	
 	stat->SetTitle( " ; pT [GeV/c]; dN^{2} / ( N_{evt} 2 #pi pT dpT dy )" );
