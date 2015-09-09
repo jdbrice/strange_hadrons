@@ -27,22 +27,22 @@ double la_bins[] = {
 
 int n_ks_bins = 15;
 double ks_bins[] = {
-0.201978,
-0.39812,
-0.595386,
-0.794214,
-0.993699,
-1.19348,
-1.39341,
-1.59341,
-1.79344,
-2.01451,
-2.28571,
-2.60577,
-2.97605,
-3.39554,
-3.83378,
-4.83378
+0.2,
+0.4,
+0.6,
+0.8,
+1.0,
+1.2,
+1.4,
+1.6,
+1.8,
+2.0,
+2.2,
+2.6,
+3.0,
+3.4,
+3.8,
+4.2
 };
 
 
@@ -77,29 +77,40 @@ TH1* draw_single_rcp(string energy, string plc, string iCen = "0", string iPer =
 	RooPlotLib rpl;
 
 	gStyle->SetOptStat( 0 );
+	INFO( "Filenames" );
 
 	string cen_fn = file_name( energy, plc, iCen );
 	string per_fn = file_name( energy, plc, iPer );
 
 	SpectraLoader cen_sl( cen_fn );
 	SpectraLoader per_sl( per_fn );
+
+	if ( "la" == plc || "ala" == plc){
+		cen_sl.trim(1);
+		per_sl.trim(1);
+	}
 	
 	TH1* cen_stat =  cen_sl.statHisto( cen_fn + "_cen_stat" ) ;
 	TH1* per_stat =  per_sl.statHisto( per_fn + "_per_stat" ) ;
 
+	
+
 	if ( "ks" == plc ){
+		INFO( "Normalizing ks" );
 		cen_stat = normalize_ks( cen_stat );
 		per_stat = normalize_ks( per_stat );
 	}
 
-	TH1* cen_stat_rcp = (TH1*)cen_stat->Clone( (cen_fn + "_cen_stat_rcp").c_str() );
-
-	rpl.style( cen_stat_rcp ).set( "title", " ;pT [GeV/c]; R_{CP} (" + centrality_labels[ stoi( iCen ) ] + " / " + centrality_labels[ stoi( iPer ) ] + " )" );
+	
 
 	if ( "la" == plc || "ala" == plc){
-		cen_stat_rcp->SetBinContent( 1, 0 );
-		cen_stat_rcp->SetBinError( 1, 0 );
+		cen_stat = normalize_la( cen_stat );
+		per_stat = normalize_la( per_stat );
 	}
+
+	TH1* cen_stat_rcp = (TH1*)cen_stat->Clone( (cen_fn + "_cen_stat_rcp").c_str() );
+	rpl.style( cen_stat_rcp ).set( "title", " ;pT [GeV/c]; R_{CP} (" + centrality_labels[ stoi( iCen ) ] + " / " + centrality_labels[ stoi( iPer ) ] + " )" );
+
 
 	cen_stat_rcp->Divide( per_stat );
 	cen_stat_rcp->Scale( per_nColl / cen_nColl );

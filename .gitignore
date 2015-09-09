@@ -1,0 +1,6 @@
+#images
+*.pdf
+*.png
+
+converted_spectra
+original_spectra
