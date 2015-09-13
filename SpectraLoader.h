@@ -7,6 +7,8 @@
 
 class SpectraLoader{
 
+	// TODO: fix the R_CP and baryon/meson plots
+
 public:
 
 	static constexpr auto tag = "SpectraLoader";
