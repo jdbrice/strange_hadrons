@@ -28,6 +28,36 @@ public:
 		sys = _sys;
 	}
 
+	SpectraLoader( vector<double> _pT,  vector<double> _value,  vector<double> _stat ){
+		pT = _pT;
+		value = _value;
+		stat = _stat;
+		sys.clear();
+		for ( double v : value ){
+			sys.push_back( 0.0 );
+			INFO( tag, "Value = " << v );
+		}
+	}
+
+	SpectraLoader( int N, double * _pT, double * _value, double * _stat ){
+		std::vector<double> _vpT( _pT, _pT+N );
+		std::vector<double> _vvalue( _value, _value+N );
+		std::vector<double> _vstat( _stat, _stat+N );
+
+		pT = _vpT;
+		value = _vvalue;
+		stat = _vstat;
+
+		sys.clear();
+		for ( double v : value ){
+			sys.push_back( 0.0 );
+			INFO( tag, "Value = " << v );
+		}
+
+		INFO( tag, "pT.size() = " << pT.size() );
+		INFO( tag, "value.size() = " << value.size() ); 
+	}
+
 	SpectraLoader( vector<double>_pT, TH1 * h ){
 		pT = _pT;
 		value.clear();
@@ -75,7 +105,6 @@ public:
 
 		for ( int i = 0; i < N; i++ ){
 			pT.erase( pT.begin() );
-			width.erase( width.begin() );
 			value.erase( value.begin() );
 			stat.erase( stat.begin() );
 			sys.erase( sys.begin() );
@@ -87,7 +116,6 @@ public:
 		for ( int i = 0; i < N; i++ ){
 			INFO( "truncateing")
 			pT.pop_back();
-			width.pop_back();
 			value.pop_back();
 			stat.pop_back();
 			sys.pop_back();
@@ -242,6 +270,22 @@ public:
 		SpectraLoader sl( _pT, _value, _stat, _sys );
 		INFO( "SpectraLoader", "Done" );
 		return sl;
+	}
+
+
+
+	void export_data( string fn ){
+
+		ofstream fout( fn.c_str() );
+
+		fout << std::setprecision( 10 ) << std::left << std::setw(20) << "pT" << std::left << std::setw(20) << "value" << std::left << std::setw(20) << "stat" << std::left << std::setw(20) << "sys" << endl; 
+		
+		for ( int i = 0; i < pT.size(); i++ ){
+			fout << std::setprecision( 10 ) << std::left << std::setw(20) << pT[i] << std::left << std::setw(20) << value[i] << std::left << std::setw(20) << stat[i] << std::left << std::setw(20) << sys[i] << endl; 
+		}
+
+		fout.close();
+
 	}
 
 };

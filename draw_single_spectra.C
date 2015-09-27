@@ -37,7 +37,7 @@ string plc_label( string plc ){
 	return "";
 }
 
-TGraphErrors* draw_single_spectra( 	string energy, string plc, string iCen,
+TGraphErrors* draw_single_spectra( 	string energy="15", string plc="la", string iCen="0",
 							int color = kRed, string draw_opt = "", double scaler = 1.0 ){
 
 	Logger::setGlobalLogLevel( Logger::llAll );

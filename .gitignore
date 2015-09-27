@@ -2,5 +2,13 @@
 *.pdf
 *.png
 
+/rcp_data/*
+/ratio_data/*
+*.dat
+*.tar.gz
+/converted_ratio
+/rcp_plotter
+/ratios
+
 converted_spectra
 original_spectra

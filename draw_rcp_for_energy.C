@@ -6,7 +6,7 @@
 #include "RooPlotLib.h"
 #include "common.C"
 
-void draw_rcp_for_energy( string en, string iCen = "0", string iPer = "5" ){
+void draw_rcp_for_energy( string en ="15", string iCen = "0", string iPer = "5" ){
 
 	Reporter rp( "tmp.pdf", 400, 400 );
 	RooPlotLib rpl;
